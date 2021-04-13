@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test ajax</title>
+    <script src="/static/js/jquery-3.1.1.min.js"></script>
+
+</head>
+<body>
+    <label for="yxdm">院校代码</label>
+    <!-- <input type="text" name = "yxdm" id ="yxdm" onchange="get_university_name()"> -->
+    <input type="text" name = "yxdm" id ="yxdm" onchange="getuniversity()" >
+    <input type="text" name = "yxmc" id = "yxmc" > <br>
+    <label for="zy1">专业一</label>
+    <input type="text" name="zy1" id="zy1" onchange="getmajorname('zy1','zy1mc')">
+    <input type="text" name="zy1mc" id="zy1mc" disabled> <br>
+    <label for="zy2">专业二</label>
+    <input type="text" name="zy2" id="zy2" onchange="getmajorname('zy2','zy2mc')">
+    <input type="text" name="zy2mc" id="zy2mc" disabled> <br>
+    <label for="zy1">专业三</label>
+    <input type="text" name="zy3" id="zy3" onchange="getmajorname('zy3','zy3mc')">
+    <input type="text" name="zy3mc" id="zy3mc" disabled>
+    <script>
+        function getuniversity(){
+            var myd1 = new Date();
+            console.log("开始查询院校",myd1.getSeconds(),'秒',myd1.getMilliseconds(),'毫秒')
+            $.ajax({
+                    url:"/getuniversityname",
+                    type:"POST",
+                    data:{yxdm:$("#yxdm").val()},
+                    success:function(name){
+                        if (name.substring(0,7) == '计划院校代号：'){
+                            $("#yxmc").css("color","red");
+                        }
+                        else{
+                            $("#yxmc").css("color","black");
+                        }
+                        $("#yxmc").val(name);
+                        $("#zy1").val('');
+                        $("#zy1mc").val('');
+                        $("#zy2").val('');
+                        $("#zy2mc").val('');
+                        $("#zy3").val('');
+                        $("#zy3mc").val('');
+                        $("#zy4").val('');
+                        $("#zy4mc").val('');
+                        $("#zy5").val('');
+                        $("#zy5mc").val('');
+                        $("#zy6").val('');
+                        $("#zy6mc").val('');
+                    },
+                    error:function(){
+                        alert('院校名称查询异常！')
+                    }
+                })
+            var myd2 = new Date();
+            console.log("结束查询院校",myd2.getSeconds(),'秒',myd2.getMilliseconds(),'毫秒，共',myd1.getMilliseconds()-myd2.getMilliseconds(),'毫秒')
+        }
+        function getmajorname(zhuanyecode,zhuanyename){
+            var zydm = "#" + zhuanyecode
+            var zymc = "#" + zhuanyename
+            var myd1 = new Date();
+            console.log("开始查询专业",myd1.getSeconds(),'秒',myd1.getMilliseconds(),'毫秒')
+            $.ajax({
+                    url:"/getmajorname",
+                    type:"POST",
+                    data:{yxdm:$("#yxdm").val(),
+                          zydm:$(zydm).val()},
+                    success:function(name){
+                        if (name.substring(0,9) == '计划院校专业代号：'){
+                            $(zymc).css("color","red");
+                        }
+                        else{
+                            $(zymc).css("color","black");
+                        }
+                        $(zymc).val(name);
+                    },
+                    error:function(){
+                        alert('专业名称查询异常！')
+                    }
+                })
+                var myd2 = new Date();
+                console.log("结束查询专业",myd2.getSeconds(),'秒',myd2.getMilliseconds(),'毫秒，共',myd1.getMilliseconds()-myd2.getMilliseconds(),'毫秒')
+
+        }
+    </script>
+</body>
+</html>
